@@ -2,8 +2,6 @@
 import 'package:flutter/material.dart';
 import '../theme.dart';
 
-/// Shows the actual TCGC school logo image.
-/// Falls back to a green school icon if the image fails to load.
 class TcgcLogo extends StatelessWidget {
   final double size;
   const TcgcLogo({super.key, this.size = 64});
@@ -13,16 +11,19 @@ class TcgcLogo extends StatelessWidget {
     return Container(
       width: size,
       height: size,
-      decoration: const BoxDecoration(
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
         color: kWhite,
         shape: BoxShape.circle,
       ),
-      clipBehavior: Clip.antiAlias,
       child: Image.asset(
         'assets/tcgc_logo.jpg',
         fit: BoxFit.contain,
         errorBuilder: (_, __, ___) => Container(
-          color: kGreen,
+          decoration: const BoxDecoration(
+            color: kGreen,
+            shape: BoxShape.circle,
+          ),
           child: Icon(Icons.school, color: kWhite, size: size * 0.56),
         ),
       ),
@@ -30,7 +31,6 @@ class TcgcLogo extends StatelessWidget {
   }
 }
 
-/// Small inline logo for sidebars and headers (circular, with green bg ring)
 class TcgcLogoSmall extends StatelessWidget {
   final double size;
   const TcgcLogoSmall({super.key, this.size = 40});
@@ -40,17 +40,20 @@ class TcgcLogoSmall extends StatelessWidget {
     return Container(
       width: size,
       height: size,
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         color: kWhite,
         shape: BoxShape.circle,
         border: Border.all(color: kGreen, width: 2),
       ),
-      clipBehavior: Clip.antiAlias,
       child: Image.asset(
         'assets/tcgc_logo.jpg',
         fit: BoxFit.contain,
         errorBuilder: (_, __, ___) => Container(
-          color: kGreen,
+          decoration: const BoxDecoration(
+            color: kGreen,
+            shape: BoxShape.circle,
+          ),
           child: Icon(Icons.school, color: kWhite, size: size * 0.5),
         ),
       ),
