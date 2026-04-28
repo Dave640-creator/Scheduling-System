@@ -23,7 +23,7 @@ class _AdminReportsState extends State<AdminReports> {
     showDialog(context: context, builder: (ctx) => StatefulBuilder(
       builder: (ctx, setS) => AlertDialog(
         title: const Text('Create Report', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
-        content: SizedBox(width: 400, child: Column(mainAxisSize: MainAxisSize.min, children: [
+        content: SizedBox(width: double.maxFinite, child: Column(mainAxisSize: MainAxisSize.min, children: [
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             const Text('Report Type', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: kGray700)),
             const SizedBox(height: 4),

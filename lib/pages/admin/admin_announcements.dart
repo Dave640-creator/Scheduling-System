@@ -35,7 +35,7 @@ class _AdminAnnouncementsState extends State<AdminAnnouncements> {
     showDialog(context: context, builder: (ctx) => StatefulBuilder(
       builder: (ctx, setS) => AlertDialog(
         title: Text(isEdit ? 'Edit Announcement' : 'Create Announcement', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
-        content: SizedBox(width: 460, child: SingleChildScrollView(child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+        content: SizedBox(width: double.maxFinite, child: SingleChildScrollView(child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
           const Text('Title', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: kGray700)),
           const SizedBox(height: 4),
           TextField(controller: titleCtrl, decoration: const InputDecoration(hintText: 'Announcement title', contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10), border: OutlineInputBorder(), enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: kGray300)))),

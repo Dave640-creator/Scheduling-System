@@ -31,7 +31,7 @@ class _PendingPageState extends State<PendingPage> {
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(16),
             child: Container(
-              width: 480,
+              width: double.infinity,
               decoration: BoxDecoration(color: kWhite, borderRadius: BorderRadius.circular(12), border: Border.all(color: kGray200), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 24, offset: const Offset(0, 4))]),
               padding: const EdgeInsets.all(32),
               child: Column(children: [

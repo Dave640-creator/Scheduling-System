@@ -55,3 +55,5 @@ ThemeData buildTheme() {
     ),
   );
 }
+
+const kGray600 = Color(0xFF4B5563);

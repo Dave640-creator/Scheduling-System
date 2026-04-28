@@ -53,7 +53,7 @@ class _AdminSchedulesState extends State<AdminSchedules> {
     showDialog(context: context, builder: (ctx) => StatefulBuilder(
       builder: (ctx, setS) => AlertDialog(
         title: Text(isEdit ? 'Edit Schedule' : 'Add New Schedule', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
-        content: SizedBox(width: 400, child: SingleChildScrollView(child: Column(mainAxisSize: MainAxisSize.min, children: [
+        content: SizedBox(width: double.maxFinite, child: SingleChildScrollView(child: Column(mainAxisSize: MainAxisSize.min, children: [
           _drop('Subject',    subject,    subjects,   (v) => setS(() => subject    = v!)),
           const SizedBox(height: 12),
           _drop('Instructor', instructor, instrList,  (v) => setS(() => instructor = v!)),
@@ -95,7 +95,7 @@ class _AdminSchedulesState extends State<AdminSchedules> {
     }}}
     showDialog(context: context, builder: (_) => AlertDialog(
       title: Row(children: [Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(color: kGreenBg, borderRadius: BorderRadius.circular(8)), child: const Icon(Icons.swap_horiz, color: kGreen, size: 20)), const SizedBox(width: 10), const Text('Reschedule Suggestion', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700))]),
-      content: SizedBox(width: 420, child: SingleChildScrollView(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      content: SizedBox(width: double.maxFinite, child: SingleChildScrollView(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Container(width: double.infinity, padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(color: kRedBg, border: Border.all(color: const Color(0xFFFECACA)), borderRadius: BorderRadius.circular(8)),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -140,8 +140,48 @@ class _AdminSchedulesState extends State<AdminSchedules> {
         child: DropdownButton<String>(value: value, isExpanded: true, underline: const SizedBox(), items: items.map((i) => DropdownMenuItem(value: i, child: Text(i, style: const TextStyle(fontSize: 13)))).toList(), onChanged: cb)),
     ]);
 
+  Widget _mobileCard(Schedule s) => Container(
+    margin: const EdgeInsets.only(bottom: 10),
+    padding: const EdgeInsets.all(14),
+    decoration: BoxDecoration(
+      color: s.hasConflict ? kRedBg : kWhite,
+      borderRadius: BorderRadius.circular(10),
+      border: Border.all(color: s.hasConflict ? const Color(0xFFFECACA) : kGray200),
+    ),
+    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Row(children: [
+        Expanded(child: Text(s.subject, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: kGray900))),
+        s.hasConflict
+          ? Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3), decoration: BoxDecoration(color: kRedLight, borderRadius: BorderRadius.circular(20)), child: const Text('Conflict', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: kRed)))
+          : Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3), decoration: BoxDecoration(color: kGreenLight, borderRadius: BorderRadius.circular(20)), child: const Text('OK', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: kGreenDark))),
+      ]),
+      const SizedBox(height: 6),
+      _detailRow(Icons.person_outline,        s.instructor),
+      const SizedBox(height: 2),
+      _detailRow(Icons.meeting_room_outlined,  s.room),
+      const SizedBox(height: 2),
+      _detailRow(Icons.today_outlined,         '${s.day}  •  ${s.time}'),
+      if (s.hasConflict) Padding(padding: const EdgeInsets.only(top: 4), child: Text(s.conflictType, style: const TextStyle(fontSize: 11, color: kRed))),
+      const SizedBox(height: 10),
+      Row(children: [
+        if (s.hasConflict) Expanded(child: ElevatedButton.icon(onPressed: () => _showReschedule(s), icon: const Icon(Icons.swap_horiz, size: 14), label: const Text('Reschedule', style: TextStyle(fontSize: 12)), style: ElevatedButton.styleFrom(backgroundColor: kGreen))),
+        if (s.hasConflict) const SizedBox(width: 6),
+        Expanded(child: OutlinedButton.icon(onPressed: () => _archive(s.id), icon: const Icon(Icons.archive_outlined, size: 14), label: const Text('Archive', style: TextStyle(fontSize: 12)), style: OutlinedButton.styleFrom(foregroundColor: kGray500))),
+        const SizedBox(width: 6),
+        Expanded(child: ElevatedButton.icon(onPressed: () => _showModal(editing: s), icon: const Icon(Icons.edit_outlined, size: 14), label: const Text('Edit', style: TextStyle(fontSize: 12)))),
+      ]),
+    ]),
+  );
+
+  Widget _detailRow(IconData icon, String text) => Row(children: [
+    Icon(icon, size: 13, color: kGray400), const SizedBox(width: 6),
+    Expanded(child: Text(text, style: const TextStyle(fontSize: 12, color: kGray600), overflow: TextOverflow.ellipsis)),
+  ]);
+
   @override
   Widget build(BuildContext context) {
+    final w        = MediaQuery.of(context).size.width;
+    final isMobile = w < 640;
     final active   = _s.schedules.where((s) => !s.isArchived).toList();
     final archived = _s.schedules.where((s) => s.isArchived).toList();
     final display  = _showArchived ? archived : active;
@@ -180,7 +220,9 @@ class _AdminSchedulesState extends State<AdminSchedules> {
         Container(margin: const EdgeInsets.only(bottom: 12), padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8), decoration: BoxDecoration(color: kGray100, borderRadius: BorderRadius.circular(8)),
           child: const Row(children: [Icon(Icons.archive_outlined, size: 16, color: kGray500), SizedBox(width: 8), Text('Showing archived schedules', style: TextStyle(fontSize: 13, color: kGray500))])),
 
-      Container(
+      isMobile
+        ? Column(children: display.map((s) => _mobileCard(s)).toList())
+        : Container(
         decoration: BoxDecoration(color: kWhite, borderRadius: BorderRadius.circular(10), border: Border.all(color: kGray200)),
         child: SingleChildScrollView(scrollDirection: Axis.horizontal, child: DataTable(
           headingRowColor: WidgetStateProperty.all(kGray50),
